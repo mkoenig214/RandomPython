@@ -1,0 +1,46 @@
+# -------------------------------------------------------------------------------- NOTEBOOK-CELL: CODE
+# -*- coding: utf-8 -*-
+import dataiku
+import pandas as pd, numpy as np
+from dataiku import pandasutils as pdu
+from itertools import combinations, product
+
+# Read recipe inputs
+random_samp_2 = dataiku.Dataset("random_samp_2")
+random_samp_2_df = random_samp_2.get_dataframe()
+random_samp_1 = dataiku.Dataset("random_samp_1")
+random_samp_1_df = random_samp_1.get_dataframe()
+
+# -------------------------------------------------------------------------------- NOTEBOOK-CELL: CODE
+c_df = random_samp_2_df
+c_df
+d_df = random_samp_1_df
+d_df
+
+# -------------------------------------------------------------------------------- NOTEBOOK-CELL: CODE
+drivers = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+c = [0,1,2,3,4,5,6,7,8,9]
+
+for x in c:
+    #print(c[x])
+    c[x] = c_df.at[x,'Constructor']
+    #print(c_df.at[x,'Constructor'])
+
+for x in drivers:
+    #print(drivers[x])
+    drivers[x] = d_df.at[x,'Driver']
+    #print(d_df.at[x,'Driver'])
+
+d_combo_5 = [i for i in combinations(drivers,5)]
+c_combo_2 = [i for i in combinations(c,2)]
+d_c_combo_5 = list(product(d_combo_5,c_combo_2))
+d_c_combo_df = pd.DataFrame(d_c_combo_5, columns = ['Drivers','Constructor'])
+
+
+random_output_df = d_c_combo_df # Compute a Pandas dataframe to write into random_output
+
+print(d_c_combo_df)
+
+# Write recipe outputs
+random_output = dataiku.Dataset("random_output")
+random_output.write_with_schema(random_output_df)
